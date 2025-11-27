@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class GunSystem : MonoBehaviour
 {
@@ -32,6 +33,7 @@ public class GunSystem : MonoBehaviour
     [Header("References")]
     public Camera fpsCam;
     public LayerMask whatIsEnemy;
+    public TextMeshProUGUI ammunitionDisplay;
 
     bool shooting, readyToShoot, reloading;
 
@@ -50,6 +52,9 @@ public class GunSystem : MonoBehaviour
     private void Update()
     {
         HandleInput();
+
+        if (ammunitionDisplay != null)
+            ammunitionDisplay.SetText("Ammo: " + bulletsLeft / bulletsPerTap + " / " + magazineSize / bulletsPerTap);
     }
 
     private void LateUpdate()
@@ -69,6 +74,8 @@ public class GunSystem : MonoBehaviour
         shooting = allowButtonHold ? Input.GetKey(KeyCode.Mouse0) : Input.GetKeyDown(KeyCode.Mouse0);
 
         if (Input.GetKey(KeyCode.R) && bulletsLeft < magazineSize && !reloading)
+            Reload();
+        if (readyToShoot && shooting && !reloading && bulletsLeft <= 0)
             Reload();
 
         if (readyToShoot && shooting && !reloading && bulletsLeft > 0)
