@@ -1,69 +1,98 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using System;
+using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
     public static event Action<Enemy> OnEnemyKilled;
-    [SerializeField] float health, maxHealth = 3f;
 
-    [SerializeField] float moveSpeed = 5f;
-    Rigidbody rb;
-    Transform target;
-    Vector3 moveDirection;
+    [SerializeField] private float maxHealth = 100f;
+    private float health;
 
-    Animator animator;
+    [SerializeField] private float moveSpeed = 5f;
+    private Rigidbody rb;
+    private Transform target;
+    private Vector3 moveDirection;
+
+    private Animator animator;
+
+    [Header("Floating Damage Text")]
+    public GameObject floatingDamageTextPrefab;
+
+    private bool isDead = false;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-
-        // Works even if animator is on a child bone/model
         animator = GetComponentInChildren<Animator>();
-
-        if (rb == null) Debug.LogError("Rigidbody missing on skeleton!");
-        if (animator == null) Debug.LogError("Animator missing on skeleton!");
     }
 
-    // Start is called before the first frame update
     private void Start()
     {
         health = maxHealth;
-        target = GameObject.FindGameObjectWithTag("Player").transform;
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null)
+            target = playerObj.transform;
     }
 
     private void Update()
     {
-        if (target)
+        if (isDead) return;
+
+        if (target != null)
         {
             moveDirection = (target.position - transform.position).normalized;
 
+            // Animator speed parameter
             float speed = moveDirection.magnitude * moveSpeed;
-            animator.SetFloat("Speed", speed);
+            if (animator != null)
+                animator.SetFloat("Speed", speed);
         }
     }
 
     private void FixedUpdate()
     {
+        if (isDead) return;
+
         if (moveDirection != Vector3.zero)
         {
-            rb.MovePosition(transform.position + moveDirection * moveSpeed * UnityEngine.Time.deltaTime);
+            rb.MovePosition(transform.position + moveDirection * moveSpeed * Time.fixedDeltaTime);
             transform.forward = moveDirection;
         }
     }
 
-    public void takeDamage(float damageAmount)
+    public void TakeDamage(float damageAmount)
     {
+        if (isDead) return;
+
         health -= damageAmount;
 
-        if (health <= 0)
+        if (floatingDamageTextPrefab != null)
         {
-            animator.SetTrigger("Die");
-            OnEnemyKilled?.Invoke(this);
-            Destroy(gameObject, 1.5f);
-            
+            Vector3 spawnPos = transform.position + Vector3.up * 2f; // spawn above enemy
+            GameObject dmgText = Instantiate(floatingDamageTextPrefab, spawnPos, Quaternion.identity);
+
+            FloatingDamageText fdt = dmgText.GetComponent<FloatingDamageText>();
+            if (fdt != null)
+                fdt.SetText(damageAmount.ToString());
         }
+
+        if (health <= 0)
+            Die();
     }
 
+
+
+    private void Die()
+    {
+        isDead = true;
+
+        if (animator != null)
+            animator.SetTrigger("Die");
+
+        OnEnemyKilled?.Invoke(this);
+
+        // Destroy after death animation
+        Destroy(gameObject, 1.5f);
+    }
 }
+
