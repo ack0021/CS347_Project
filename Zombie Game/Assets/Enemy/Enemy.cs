@@ -3,7 +3,6 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public static event Action<Enemy> OnEnemyKilled;
 
     [SerializeField] private float maxHealth = 100f;
     private float health;
@@ -98,21 +97,23 @@ public class Enemy : MonoBehaviour
 
     private void Die()
     {
+        if (isDead) return;
         isDead = true;
 
         if (animator != null)
             animator.SetTrigger("Die");
 
-        OnEnemyKilled?.Invoke(this);
+        // Notify spawner
+        if (spawner != null)
+            spawner.EnemyDied();
 
-        // Destroy after death animation
+        // Notify global kill counter
+        var counter = FindObjectOfType<ZombiesKilledCounter>();
+        if (counter != null)
+            counter.IncrementKills();
+
         Destroy(gameObject, 1.5f);
     }
 
-    void OnDestroy()
-    {
-        if (spawner != null)
-            spawner.EnemyDied();
-    }
 }
 
