@@ -4,8 +4,8 @@ using TMPro;
 public class FloatingDamageText : MonoBehaviour
 {
     [Header("Movement")]
-    public float moveUpSpeed = 1f;
-    public float randomSpread = 0.3f;
+    public float moveUpSpeed = 40f;
+    public float randomSpread = 20f;
 
     [Header("Pop Animation")]
     public float popScale = 1.5f;
@@ -14,31 +14,34 @@ public class FloatingDamageText : MonoBehaviour
     [Header("Fade")]
     public float fadeSpeed = 2f;
 
-    private TextMeshPro text;
+    private TextMeshProUGUI text;
     private Color textColor;
     private Vector3 baseScale;
     private Vector3 floatDirection;
     private bool popped = false;
 
+    private RectTransform rect;
+
     void Awake()
     {
-        text = GetComponent<TextMeshPro>();
+        text = GetComponent<TextMeshProUGUI>();
+        rect = GetComponent<RectTransform>();
+
         if (text == null)
         {
-            Debug.LogError("FloatingDamageText: TextMeshPro component not found!");
+            Debug.LogError("FloatingDamageText: TextMeshProUGUI component not found!");
             return;
         }
 
         textColor = text.color;
         baseScale = transform.localScale;
 
-        // Random floating direction
-        floatDirection = Vector3.up + new Vector3(
+        // Randomized movement direction for UI (x + y movement only)
+        floatDirection = new Vector3(
             Random.Range(-randomSpread, randomSpread),
-            0f,
-            Random.Range(-randomSpread, randomSpread)
-        );
-        floatDirection.Normalize();
+            Random.Range(15f, 35f), // always move up
+            0f
+        ).normalized;
     }
 
     public void SetText(string value)
@@ -63,15 +66,8 @@ public class FloatingDamageText : MonoBehaviour
             transform.localScale = Vector3.Lerp(transform.localScale, baseScale, popSpeed * Time.deltaTime);
         }
 
-        // Floating movement
-        transform.position += floatDirection * moveUpSpeed * Time.deltaTime;
-
-        // Face camera
-        if (Camera.main != null)
-        {
-            Vector3 lookDir = transform.position - Camera.main.transform.position;
-            transform.rotation = Quaternion.LookRotation(lookDir);
-        }
+        // Floating movement (UI uses anchoredPosition)
+        rect.anchoredPosition += (Vector2)(floatDirection * moveUpSpeed * Time.deltaTime);
 
         // Fade out
         textColor.a -= fadeSpeed * Time.deltaTime;
@@ -81,5 +77,6 @@ public class FloatingDamageText : MonoBehaviour
             Destroy(gameObject);
     }
 }
+
 
 

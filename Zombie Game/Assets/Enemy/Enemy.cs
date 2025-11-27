@@ -20,6 +20,9 @@ public class Enemy : MonoBehaviour
 
     private bool isDead = false;
 
+    public ZombieSpawner spawner;
+    public Canvas uiCanvas;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -32,6 +35,11 @@ public class Enemy : MonoBehaviour
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null)
             target = playerObj.transform;
+
+        if (spawner != null)
+        {
+            spawner = FindObjectOfType<ZombieSpawner>();
+        }
     }
 
     private void Update()
@@ -66,11 +74,19 @@ public class Enemy : MonoBehaviour
 
         health -= damageAmount;
 
-        if (floatingDamageTextPrefab != null)
+        if (floatingDamageTextPrefab != null && uiCanvas != null)
         {
-            Vector3 spawnPos = transform.position + Vector3.up * 2f; // spawn above enemy
-            GameObject dmgText = Instantiate(floatingDamageTextPrefab, spawnPos, Quaternion.identity);
+            // Convert enemy world position to screen position
+            Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 2f);
 
+            // Instantiate as child of canvas
+            GameObject dmgText = Instantiate(floatingDamageTextPrefab, uiCanvas.transform);
+
+            // Set position in canvas space
+            RectTransform rect = dmgText.GetComponent<RectTransform>();
+            rect.position = screenPos;
+
+            // Set the damage text
             FloatingDamageText fdt = dmgText.GetComponent<FloatingDamageText>();
             if (fdt != null)
                 fdt.SetText(damageAmount.ToString());
@@ -79,8 +95,6 @@ public class Enemy : MonoBehaviour
         if (health <= 0)
             Die();
     }
-
-
 
     private void Die()
     {
@@ -93,6 +107,12 @@ public class Enemy : MonoBehaviour
 
         // Destroy after death animation
         Destroy(gameObject, 1.5f);
+    }
+
+    void OnDestroy()
+    {
+        if (spawner != null)
+            spawner.EnemyDied();
     }
 }
 

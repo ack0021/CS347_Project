@@ -1746,10 +1746,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df6af1a7e01545345802c82dd38412f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
   maxHealth: 100
   moveSpeed: 4
-  floatingDamageTextPrefab: {fileID: 0}
+  floatingDamageTextPrefab: {fileID: 5968051395156989246, guid: 70fb93300aae5b64e82077422417943b, type: 3}
+  spawner: {fileID: 0}
 --- !u!54 &-6751606203624153122
 Rigidbody:
   m_ObjectHideFlags: 0
