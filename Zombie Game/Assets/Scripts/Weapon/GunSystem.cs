@@ -36,6 +36,10 @@ public class GunSystem : MonoBehaviour
     public LayerMask whatIsEnemy;
     public TextMeshProUGUI ammunitionDisplay;
 
+    [SerializeField] AudioSource shoot;
+    [SerializeField] AudioSource reload;
+
+
     bool shooting, readyToShoot, reloading;
 
     private void Awake()
@@ -75,14 +79,23 @@ public class GunSystem : MonoBehaviour
         shooting = allowButtonHold ? Input.GetKey(KeyCode.Mouse0) : Input.GetKeyDown(KeyCode.Mouse0);
 
         if (Input.GetKey(KeyCode.R) && bulletsLeft < magazineSize && !reloading)
+        {
             Reload();
+            reload.Play();
+        }
+
         if (readyToShoot && shooting && !reloading && bulletsLeft <= 0)
+        {
             Reload();
+            reload.Play();
+        }
+            
 
         if (readyToShoot && shooting && !reloading && bulletsLeft > 0)
         {
             bulletsShot = bulletsPerTap;
             Shoot();
+            shoot.Play();
         }
     }
 
