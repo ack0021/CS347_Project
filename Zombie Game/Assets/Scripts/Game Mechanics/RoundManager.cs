@@ -7,6 +7,7 @@ public class RoundManager : MonoBehaviour
 {
     public int totalZombiesThisRound = 20; // total zombies for this round
     private int totalSpawned = 0;
+    private int totalKilled = 0;
 
     public event Action OnRoundEnd;
 
@@ -19,9 +20,14 @@ public class RoundManager : MonoBehaviour
     public void ZombieSpawned()
     {
         totalSpawned++;
+    }
 
-        // If we reached the limit, end the round
-        if (totalSpawned >= totalZombiesThisRound)
+    public void ZombieKilled()
+    {
+        totalKilled++;
+
+        // If all zombies are killed, end the round
+        if (totalKilled >= totalZombiesThisRound)
         {
             OnRoundEnd?.Invoke();
         }
@@ -29,7 +35,7 @@ public class RoundManager : MonoBehaviour
 
     public int ZombiesRemaining()
     {
-        return totalZombiesThisRound - totalSpawned;
+        return totalZombiesThisRound - totalKilled;
     }
 }
 

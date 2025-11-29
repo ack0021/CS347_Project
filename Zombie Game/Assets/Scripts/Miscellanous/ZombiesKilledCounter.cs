@@ -23,6 +23,7 @@ public class ZombiesKilledCounter : MonoBehaviour
     {
         kills++;
         UpdateCounter();
+        roundManager.ZombieKilled();
     }
 
     private void UpdateCounter()
