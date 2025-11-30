@@ -1,69 +1,109 @@
-using System;
+using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Enemy : MonoBehaviour
 {
+    [Header("Stats")]
+    public float maxHealth = 100f;
+    public float moveSpeed = 3.5f;
 
-    [SerializeField] private float maxHealth = 100f;
-    private float health;
+    [Header("Attack Settings (No Animation Events)")]
+    public float attackRange = 2.5f;
+    public float attackDamage = 10f;
+    public float attackCooldown = 1.2f;
+    private float nextAttackTime = 0f;
 
-    [SerializeField] private float moveSpeed = 5f;
-    private Rigidbody rb;
-    private Transform target;
-    private Vector3 moveDirection;
-
-    private Animator animator;
-
-    [Header("Floating Damage Text")]
+    [Header("Damage Text")]
     public GameObject floatingDamageTextPrefab;
+    public Canvas uiCanvas;
 
+    [HideInInspector] public ZombieSpawner spawner;
+
+    private float health;
     private bool isDead = false;
 
-    public ZombieSpawner spawner;
-    public Canvas uiCanvas;
+    private Rigidbody rb;
+    private Transform target;
+    private Animator animator;
+
+    private Vector3 moveDirection;
+    private float stoppingDistance = 2f;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
+
+        animator.applyRootMotion = false;
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
     }
 
     private void Start()
     {
         health = maxHealth;
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj != null)
-            target = playerObj.transform;
 
-        if (spawner != null)
-        {
-            spawner = FindObjectOfType<ZombieSpawner>();
-        }
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+
+        target = playerObj.transform;
+
+        StartCoroutine(GroundZombie());
     }
 
     private void Update()
     {
-        if (isDead) return;
+        if (isDead || target == null) return;
 
-        if (target != null)
-        {
-            moveDirection = (target.position - transform.position).normalized;
+        float distance = Vector3.Distance(transform.position, target.position);
 
-            // Animator speed parameter
-            float speed = moveDirection.magnitude * moveSpeed;
-            if (animator != null)
-                animator.SetFloat("Speed", speed);
-        }
+        Vector3 faceDir = target.position - transform.position;
+        faceDir.y = 0f;
+        transform.forward = faceDir.normalized;
+
+        if (distance > stoppingDistance)
+            moveDirection = faceDir.normalized;
+        else
+            moveDirection = Vector3.zero;
+
+        GroundFollow();
+
+        CheckAndPerformAttack();
+
+        animator.SetFloat("Speed", moveDirection.magnitude);
     }
 
     private void FixedUpdate()
     {
         if (isDead) return;
 
-        if (moveDirection != Vector3.zero)
+        Vector3 flat = moveDirection;
+        flat.y = 0;
+
+        rb.MovePosition(rb.position + flat * moveSpeed * Time.fixedDeltaTime);
+    }
+
+    private void CheckAndPerformAttack()
+    {
+        if (Time.time < nextAttackTime) return;
+
+        Collider[] hits = Physics.OverlapSphere(transform.position, attackRange);
+
+        foreach (Collider hit in hits)
         {
-            rb.MovePosition(transform.position + moveDirection * moveSpeed * Time.fixedDeltaTime);
-            transform.forward = moveDirection;
+            if (hit.CompareTag("Player"))
+            {
+                nextAttackTime = Time.time + attackCooldown;
+
+                animator.SetTrigger("Attack");
+
+                PlayerMovement p = hit.GetComponent<PlayerMovement>();
+                if (p != null)
+                {
+                    p.TakeDamage(attackDamage);
+                }
+
+                return;
+            }
         }
     }
 
@@ -73,26 +113,18 @@ public class Enemy : MonoBehaviour
 
         health -= damageAmount;
 
-        if (floatingDamageTextPrefab != null && uiCanvas != null)
+        if (floatingDamageTextPrefab && uiCanvas)
         {
-            // Convert enemy world position to screen position
-            Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 2f);
+            Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position + Vector3.up * 1.8f);
+            var go = Instantiate(floatingDamageTextPrefab, uiCanvas.transform);
+            go.GetComponent<RectTransform>().position = screenPos;
 
-            // Instantiate as child of canvas
-            GameObject dmgText = Instantiate(floatingDamageTextPrefab, uiCanvas.transform);
-
-            // Set position in canvas space
-            RectTransform rect = dmgText.GetComponent<RectTransform>();
-            rect.position = screenPos;
-
-            // Set the damage text
-            FloatingDamageText fdt = dmgText.GetComponent<FloatingDamageText>();
+            var fdt = go.GetComponent<FloatingDamageText>();
             if (fdt != null)
-                fdt.SetText(damageAmount.ToString());
+                fdt.SetText(Mathf.CeilToInt(damageAmount).ToString());
         }
 
-        if (health <= 0)
-            Die();
+        if (health <= 0) Die();
     }
 
     private void Die()
@@ -100,20 +132,47 @@ public class Enemy : MonoBehaviour
         if (isDead) return;
         isDead = true;
 
-        if (animator != null)
-            animator.SetTrigger("Die");
+        animator.SetTrigger("Die");
 
-        // Notify spawner
-        if (spawner != null)
-            spawner.EnemyDied();
+        spawner?.EnemyDied();
 
-        // Notify global kill counter
         var counter = FindObjectOfType<ZombiesKilledCounter>();
-        if (counter != null)
-            counter.IncrementKills();
+        counter?.IncrementKills();
 
         Destroy(gameObject, 1.5f);
     }
 
+    private IEnumerator GroundZombie()
+    {
+        yield return new WaitForSeconds(0.05f);
+
+        if (Physics.Raycast(transform.position + Vector3.up * 2f, Vector3.down, out RaycastHit hit, 10f))
+        {
+            Vector3 pos = transform.position;
+            pos.y = hit.point.y;
+            transform.position = pos;
+        }
+    }
+
+    private void GroundFollow()
+    {
+        if (Physics.Raycast(transform.position + Vector3.up, Vector3.down, out RaycastHit hit, 5f))
+        {
+            Vector3 pos = transform.position;
+            pos.y = Mathf.Lerp(pos.y, hit.point.y, Time.deltaTime * 15f);
+            transform.position = pos;
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
 }
+
+
+
+
+
 

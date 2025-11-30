@@ -14,24 +14,21 @@ public class ZombiesKilledCounter : MonoBehaviour
     {
         if (roundManager == null)
             roundManager = FindObjectOfType<RoundManager>();
-
-        if (roundManager != null)
-            roundManager.OnRoundEnd += UpdateCounter; // optional: if you want to do something at the end
     }
 
     public void IncrementKills()
     {
         kills++;
-        UpdateCounter();
-        roundManager.ZombieKilled();
+        UpdateCounter(kills);
     }
 
-    private void UpdateCounter()
+    private void UpdateCounter(int kills)
     {
         if (zombiesKilledText != null)
             zombiesKilledText.SetText("Zombies Killed: " + kills);
     }
 }
+
 
 
 

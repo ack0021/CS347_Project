@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class GunSystem : MonoBehaviour
+public class GunSystem1 : MonoBehaviour
 {
     [Header("Gun Stats")]
     public int damage;
@@ -39,6 +39,7 @@ public class GunSystem : MonoBehaviour
     [SerializeField] AudioSource shoot;
     [SerializeField] AudioSource reload;
 
+    public bool isDead = false;
 
     bool shooting, readyToShoot, reloading;
 
@@ -56,6 +57,8 @@ public class GunSystem : MonoBehaviour
 
     private void Update()
     {
+        if (isDead == true) return;
+
         HandleInput();
 
         if (ammunitionDisplay != null)
@@ -64,6 +67,8 @@ public class GunSystem : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (isDead == true) return;
+
         if (cameraTransform != null)
         {
             // Smoothly decay recoil offset
@@ -76,6 +81,7 @@ public class GunSystem : MonoBehaviour
 
     private void HandleInput()
     {
+
         shooting = allowButtonHold ? Input.GetKey(KeyCode.Mouse0) : Input.GetKeyDown(KeyCode.Mouse0);
 
         if (Input.GetKey(KeyCode.R) && bulletsLeft < magazineSize && !reloading)
@@ -89,7 +95,7 @@ public class GunSystem : MonoBehaviour
             Reload();
             reload.Play();
         }
-            
+
 
         if (readyToShoot && shooting && !reloading && bulletsLeft > 0)
         {
@@ -101,52 +107,56 @@ public class GunSystem : MonoBehaviour
 
     private void Shoot()
     {
-        readyToShoot = false;
+        if (isDead == true) return;
 
+        readyToShoot = false;
         muzzleFlash.Play();
 
-        // Determine target point
+        Ray ray = fpsCam.ScreenPointToRay(
+            new Vector3(Screen.width / 2f, Screen.height / 2f, 0)
+        );
+
         Vector3 targetPoint;
-        Ray ray = fpsCam.ScreenPointToRay(new Vector3(Screen.width / 2f, Screen.height / 2f, 0));
-        if (Physics.Raycast(ray, out RaycastHit hit, range, whatIsEnemy))
+
+        if (Physics.Raycast(ray, out RaycastHit hit, range))
             targetPoint = hit.point;
         else
-            targetPoint = ray.GetPoint(1000);
+            targetPoint = ray.GetPoint(range);
 
-        // Spread
-        float x = Random.Range(-spread, spread);
-        float y = Random.Range(-spread, spread);
+        Vector3 direction = (targetPoint - bulletSpawn.position).normalized;
 
-        Vector3 direction = (targetPoint - bulletSpawn.position + new Vector3(x, y, 0)).normalized;
+        GameObject bullet = Instantiate(
+            bulletPrefab.gameObject,
+            bulletSpawn.position,
+            Quaternion.LookRotation(direction)
+        );
 
-        // Instantiate bullet
-        GameObject bullet = Instantiate(bulletPrefab.gameObject, bulletSpawn.position, Quaternion.identity);
+        Rigidbody rb = bullet.GetComponent<Rigidbody>();
         bullet.GetComponent<BulletScript>().damage = damage;
-        bullet.transform.forward = direction;
-        bullet.GetComponent<Rigidbody>().AddForce(direction * bulletVelocity, ForceMode.Impulse);
+
+        rb.AddForce(direction * bulletVelocity, ForceMode.Impulse);
+
         StartCoroutine(DestroyBulletAfterTime(bullet, bulletLifetime));
 
         bulletsLeft--;
         bulletsShot--;
 
-        // Apply gun recoil
         if (gunTransform != null)
         {
             StopCoroutine("RecoilGun");
             StartCoroutine(RecoilGun());
         }
 
-        // Apply camera recoil
         if (cameraTransform != null)
-        {
             ApplyCameraRecoil();
-        }
 
-        Invoke("ResetShot", timeBetweenShooting);
+        Invoke(nameof(ResetShot), timeBetweenShooting);
 
         if (bulletsShot > 0 && bulletsLeft > 0)
-            Invoke("Shoot", timeBetweenShots);
+            Invoke(nameof(Shoot), timeBetweenShots);
     }
+
+
 
     private void ApplyCameraRecoil()
     {
@@ -187,5 +197,10 @@ public class GunSystem : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         Destroy(bullet);
+    }
+
+    public void Dead()
+    {
+        isDead = true;
     }
 }

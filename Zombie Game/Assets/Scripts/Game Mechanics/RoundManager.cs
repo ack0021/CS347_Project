@@ -5,16 +5,37 @@ using UnityEngine;
 
 public class RoundManager : MonoBehaviour
 {
-    public int totalZombiesThisRound = 20; // total zombies for this round
-    private int totalSpawned = 0;
-    private int totalKilled = 0;
+    [Header("Round settings")]
+    [Tooltip("Round 1 zombie count")]
+    public int baseZombieCount = 10;
+    [Tooltip("How many extra zombies are added each round")]
+    public int zombiesPerRoundIncrease = 5;
 
-    public event Action OnRoundEnd;
+    [Header("Optional")]
+    public int startRound = 1;
 
-    public bool CanSpawnZombie()
+    [HideInInspector] private int currentRound;
+    [HideInInspector] private int totalZombiesThisRound;
+    [HideInInspector] private int totalSpawned;
+    [HideInInspector] private int totalKilled;
+
+    public event Action<int> OnRoundEnd;  
+
+    private void Awake()
     {
-        // Only allow spawn if we haven’t reached the limit
-        return totalSpawned < totalZombiesThisRound;
+        currentRound = Mathf.Max(1, startRound);
+    }
+
+    private void Start()
+    {
+        StartNewRound();
+    }
+
+    private void StartNewRound()
+    {
+        totalSpawned = 0;
+        totalKilled = 0;
+        totalZombiesThisRound = baseZombieCount + (currentRound - 1) * zombiesPerRoundIncrease;
     }
 
     public void ZombieSpawned()
@@ -26,16 +47,33 @@ public class RoundManager : MonoBehaviour
     {
         totalKilled++;
 
-        // If all zombies are killed, end the round
-        if (totalKilled >= totalZombiesThisRound)
+        bool allSpawned = totalSpawned >= totalZombiesThisRound;
+        bool allKilled = totalKilled >= totalZombiesThisRound;
+
+        if (allSpawned && allKilled)
         {
-            OnRoundEnd?.Invoke();
+            OnRoundEnd?.Invoke(currentRound);
+            StartNextRound();
         }
     }
 
-    public int ZombiesRemaining()
+    private void StartNextRound()
     {
-        return totalZombiesThisRound - totalKilled;
+        currentRound++;
+        StartNewRound();
+    }
+
+    public int CurrentRound => currentRound;
+    public int TotalZombiesThisRound => totalZombiesThisRound;
+    public int TotalSpawned => totalSpawned;
+    public int TotalKilled => totalKilled;
+
+    // Whether the round still has quota left for spawning
+    public bool CanSpawnMoreThisRound()
+    {
+        return totalSpawned < totalZombiesThisRound;
     }
 }
+
+
 
