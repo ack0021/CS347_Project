@@ -20,6 +20,8 @@ public class TestPlayerMovement : MonoBehaviour
 
     private Vector3 lastPosition = new Vector3(0f, 0f, 0f);
 
+    public bool canMove = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,6 +31,14 @@ public class TestPlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Freeze movement on end of round
+        if (!canMove)
+        {
+            controller.Move(Vector3.zero);
+            velocity = Vector3.zero;
+            return;
+        }
+
         // Ground Check
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 

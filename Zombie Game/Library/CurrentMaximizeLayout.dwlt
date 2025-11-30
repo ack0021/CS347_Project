@@ -274,18 +274,18 @@ MonoBehaviour:
     m_ExpandedIDs: ffffffff00000000224700002447000026470000284700002a4700002c4700002e47000030470000324700003447000036470000384700003a4700003c4700003e470000404700004247000044470000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: 
-      m_OriginalName: 
+      m_Name: MusicManager
+      m_OriginalName: MusicManager
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 0
+      m_UserData: 50472
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 11
+      m_OriginalEventType: 0
       m_IsRenamingFilename: 1
       m_ClientGUIView: {fileID: 5}
     m_SearchString: 
@@ -386,18 +386,18 @@ MonoBehaviour:
       m_ExpandedIDs: 22ecffff42ecfffffcf6ffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: 
-        m_OriginalName: 
+        m_Name: BGM
+        m_OriginalName: BGM
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 0
+        m_UserData: 19462
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 11
+        m_OriginalEventType: 0
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 7}
       m_SearchString: 
@@ -595,13 +595,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.036122914, y: 0.9480209, z: -0.11662848, w: 0.29389685}
+    m_Target: {x: 0.053373106, y: -0.0048102597, z: 0.00022681749, w: 0.99857605}
     speed: 2
-    m_Value: {x: 0.036122445, y: 0.94800854, z: -0.11662697, w: 0.29389304}
+    m_Value: {x: 0.053372413, y: -0.0048101973, z: 0.00022681453, w: 0.99856305}
   m_Size:
-    m_Target: 5.7564974
+    m_Target: 57.403614
     speed: 2
-    m_Value: 5.7564974
+    m_Value: 57.403614
   m_Ortho:
     m_Target: 0
     speed: 2

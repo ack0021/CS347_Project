@@ -21,7 +21,7 @@ MonoBehaviour:
   m_ShowMode: 4
   m_Title: Console
   m_RootView: {fileID: 2}
-  m_MinSize: {x: 875, y: 492}
+  m_MinSize: {x: 875, y: 471}
   m_MaxSize: {x: 10000, y: 10000}
   m_Maximized: 1
 --- !u!114 &2
@@ -522,7 +522,7 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_AssetTreeState:
-    scrollPos: {x: 0, y: 0}
+    scrollPos: {x: 0, y: 12}
     m_SelectedIDs: 
     m_LastClickedID: 0
     m_ExpandedIDs: ffffffff00000000224700002447000026470000284700002a4700002c4700002e47000030470000324700003447000036470000384700003a4700003c4700003e470000404700004247000044470000
@@ -745,13 +745,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0.036122914, y: 0.9480209, z: -0.11662848, w: 0.29389685}
+    m_Target: {x: 0.053373106, y: -0.0048102597, z: 0.00022681749, w: 0.99857605}
     speed: 2
-    m_Value: {x: 0.036122914, y: 0.94802094, z: -0.11662848, w: 0.29389685}
+    m_Value: {x: -0.053373106, y: 0.004810259, z: -0.00022681747, w: -0.998576}
   m_Size:
-    m_Target: 5.7564974
+    m_Target: 57.403614
     speed: 2
-    m_Value: 5.7564974
+    m_Value: 57.403614
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -869,7 +869,7 @@ MonoBehaviour:
     m_ControlHash: -371814159
     m_PrefName: Preview_InspectorPreview
   m_LastInspectedObjectInstanceID: -1
-  m_LastVerticalScrollValue: 0
+  m_LastVerticalScrollValue: 117
   m_GlobalObjectId: 
   m_LockTracker:
     m_IsLocked: 0
