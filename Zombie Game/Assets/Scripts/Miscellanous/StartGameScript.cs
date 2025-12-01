@@ -15,6 +15,6 @@ public class StartGameScript : MonoBehaviour
 
     public void OnNextPress()
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("Parker's - SampleScene");
     }
 }

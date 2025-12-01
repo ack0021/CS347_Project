@@ -5017,7 +5017,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 601eadd2fed91b84995b0eb05132f78d, type: 2}
+  - {fileID: 2100000, guid: cae46648b668d724198a4e59d8eaf908, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5052,7 +5052,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 20
-  timeBetweenShooting: 0.08
   spread: 0
   range: 100
   reloadTime: 1
@@ -5060,6 +5059,7 @@ MonoBehaviour:
   magazineSize: 30
   bulletsPerTap: 1
   allowButtonHold: 1
+  fireRate: 0.2
   bulletPrefab: {fileID: 5734226987334961642, guid: 12ec5511285bda24c868aaf75c93e166, type: 3}
   bulletSpawn: {fileID: 0}
   bulletVelocity: 100

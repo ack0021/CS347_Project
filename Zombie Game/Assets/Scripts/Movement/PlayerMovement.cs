@@ -8,7 +8,8 @@ public class PlayerMovement : MonoBehaviour
     public GunSystem1 gunSystem;
 
     [Header("Movement")]
-    public float speed = 12f;
+    public float baseSpeed = 12f;
+    public float speedMultiplier = 1f;
     public float gravity = -9.81f * 2;
     public float jumpHeight = 3f;
 
@@ -31,12 +32,10 @@ public class PlayerMovement : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         currentHealth = maxHealth;
-
     }
 
     void Update()
     {
-        // Freeze movement on end of round
         if (!canMove)
         {
             controller.Move(Vector3.zero);
@@ -44,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        // Ground Check
+        // Ground check
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
         if (isGrounded && velocity.y < 0)
@@ -53,6 +52,7 @@ public class PlayerMovement : MonoBehaviour
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
+        // Camera relative movement
         Vector3 camForward = Camera.main.transform.forward;
         Vector3 camRight = Camera.main.transform.right;
 
@@ -63,13 +63,14 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 move = camRight * x + camForward * z;
 
-        controller.Move(move * speed * Time.deltaTime);
+        // USE MULTIPLIED SPEED
+        float finalSpeed = baseSpeed * speedMultiplier;
+        controller.Move(move * finalSpeed * Time.deltaTime);
 
         if (Input.GetButtonDown("Jump") && isGrounded)
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
 
         velocity.y += gravity * Time.deltaTime;
-
         controller.Move(velocity * Time.deltaTime);
     }
 
@@ -83,9 +84,7 @@ public class PlayerMovement : MonoBehaviour
             gunSystem.Dead();
 
             if (gameOverUI != null)
-            {
                 gameOverUI.ShowGameOver();
-            }
         }
     }
 
@@ -96,14 +95,11 @@ public class PlayerMovement : MonoBehaviour
 
         PlayerCam camLook = Camera.main.GetComponent<PlayerCam>();
         if (camLook != null)
-        {
             camLook.enabled = false;
-        }
 
         if (gameOverUI != null)
-        {
             gameOverUI.ShowGameOver();
-        }
     }
 }
+
 

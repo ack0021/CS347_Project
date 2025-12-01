@@ -46,12 +46,14 @@ public class FloatingDamageText : MonoBehaviour
 
     public void SetText(string value)
     {
+        if (UpgradeSystem.instance != null && UpgradeSystem.instance.IsMenuOpen) return;
         if (text != null)
             text.text = value;
     }
 
     void Update()
     {
+        if (UpgradeSystem.instance != null && UpgradeSystem.instance.IsMenuOpen) return;
         if (text == null) return;
 
         // Pop animation

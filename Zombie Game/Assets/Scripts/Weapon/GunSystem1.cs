@@ -5,9 +5,18 @@ using TMPro;
 
 public class GunSystem1 : MonoBehaviour
 {
-    [Header("Gun Stats")]
-    public int damage;
-    public float timeBetweenShooting, spread, range, reloadTime, timeBetweenShots;
+    [Header("Gun Stats (Base Values)")]
+    public float baseDamage = 10f;
+    public float baseFireRate = 0.2f;
+    public float baseReloadTime = 1.5f;
+
+    [Header("Upgrade Multipliers")]
+    public float damageMultiplier = 1f;
+    public float fireRateMultiplier = 1f;  // Higher = shoots faster
+    public float reloadMultiplier = 1f;    // Higher = reloads faster
+
+    // Existing gun stats
+    public float spread, range, timeBetweenShots;
     public int magazineSize, bulletsPerTap;
     public bool allowButtonHold;
     int bulletsLeft, bulletsShot;
@@ -40,8 +49,12 @@ public class GunSystem1 : MonoBehaviour
     [SerializeField] AudioSource reload;
 
     public bool isDead = false;
-
     bool shooting, readyToShoot, reloading;
+
+    // FINAL values used in gameplay
+    public float Damage => baseDamage * damageMultiplier;
+    public float FireRate => baseFireRate / fireRateMultiplier;   // reduce time between shots
+    public float ReloadTime => baseReloadTime / reloadMultiplier; // reduce reload duration
 
     private void Awake()
     {
@@ -57,7 +70,7 @@ public class GunSystem1 : MonoBehaviour
 
     private void Update()
     {
-        if (isDead == true) return;
+        if (isDead) return;
 
         HandleInput();
 
@@ -65,23 +78,8 @@ public class GunSystem1 : MonoBehaviour
             ammunitionDisplay.SetText("Ammo: " + bulletsLeft / bulletsPerTap + " / " + magazineSize / bulletsPerTap);
     }
 
-    private void LateUpdate()
-    {
-        if (isDead == true) return;
-
-        if (cameraTransform != null)
-        {
-            // Smoothly decay recoil offset
-            currentCameraRecoil = Vector3.Lerp(currentCameraRecoil, Vector3.zero, cameraRecoilReturnSpeed * Time.deltaTime);
-
-            // Add recoil to current rotation
-            cameraTransform.localEulerAngles += currentCameraRecoil;
-        }
-    }
-
     private void HandleInput()
     {
-
         shooting = allowButtonHold ? Input.GetKey(KeyCode.Mouse0) : Input.GetKeyDown(KeyCode.Mouse0);
 
         if (Input.GetKey(KeyCode.R) && bulletsLeft < magazineSize && !reloading)
@@ -96,7 +94,6 @@ public class GunSystem1 : MonoBehaviour
             reload.Play();
         }
 
-
         if (readyToShoot && shooting && !reloading && bulletsLeft > 0)
         {
             bulletsShot = bulletsPerTap;
@@ -107,7 +104,7 @@ public class GunSystem1 : MonoBehaviour
 
     private void Shoot()
     {
-        if (isDead == true) return;
+        if (isDead) return;
 
         readyToShoot = false;
         muzzleFlash.Play();
@@ -132,10 +129,9 @@ public class GunSystem1 : MonoBehaviour
         );
 
         Rigidbody rb = bullet.GetComponent<Rigidbody>();
-        bullet.GetComponent<BulletScript>().damage = damage;
+        bullet.GetComponent<BulletScript>().damage = Mathf.RoundToInt(Damage);
 
         rb.AddForce(direction * bulletVelocity, ForceMode.Impulse);
-
         StartCoroutine(DestroyBulletAfterTime(bullet, bulletLifetime));
 
         bulletsLeft--;
@@ -150,41 +146,18 @@ public class GunSystem1 : MonoBehaviour
         if (cameraTransform != null)
             ApplyCameraRecoil();
 
-        Invoke(nameof(ResetShot), timeBetweenShooting);
+        Invoke(nameof(ResetShot), FireRate); // USE FINAL FIRERATE
 
         if (bulletsShot > 0 && bulletsLeft > 0)
             Invoke(nameof(Shoot), timeBetweenShots);
     }
 
-
-
-    private void ApplyCameraRecoil()
-    {
-        float recoilX = Random.Range(-cameraRecoilAngle, -cameraRecoilAngle * 0.5f);
-        float recoilY = Random.Range(-0.5f, 0.5f);
-        currentCameraRecoil += new Vector3(recoilX, recoilY, 0);
-    }
-
-    private IEnumerator RecoilGun()
-    {
-        gunTransform.localPosition += recoilPosition;
-        while (Vector3.Distance(gunTransform.localPosition, initialGunPosition) > 0.001f)
-        {
-            gunTransform.localPosition = Vector3.Lerp(gunTransform.localPosition, initialGunPosition, gunRecoilSpeed * Time.deltaTime);
-            yield return null;
-        }
-        gunTransform.localPosition = initialGunPosition;
-    }
-
-    private void ResetShot()
-    {
-        readyToShoot = true;
-    }
+    private void ResetShot() => readyToShoot = true;
 
     private void Reload()
     {
         reloading = true;
-        Invoke("ReloadFinished", reloadTime);
+        Invoke(nameof(ReloadFinished), ReloadTime); // USE FINAL RELOAD SPEED
     }
 
     private void ReloadFinished()
@@ -199,8 +172,26 @@ public class GunSystem1 : MonoBehaviour
         Destroy(bullet);
     }
 
-    public void Dead()
+    public void Dead() => isDead = true;
+
+    // --- unchanged recoil code ---
+    private void ApplyCameraRecoil()
     {
-        isDead = true;
+        float recoilX = Random.Range(-cameraRecoilAngle, -cameraRecoilAngle * 0.5f);
+        float recoilY = Random.Range(-0.5f, 0.5f);
+        currentCameraRecoil += new Vector3(recoilX, recoilY, 0);
+    }
+
+    private IEnumerator RecoilGun()
+    {
+        gunTransform.localPosition += recoilPosition;
+        while (Vector3.Distance(gunTransform.localPosition, initialGunPosition) > 0.001f)
+        {
+            gunTransform.localPosition =
+                Vector3.Lerp(gunTransform.localPosition, initialGunPosition, gunRecoilSpeed * Time.deltaTime);
+            yield return null;
+        }
+        gunTransform.localPosition = initialGunPosition;
     }
 }
+

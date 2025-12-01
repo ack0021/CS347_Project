@@ -7,7 +7,6 @@ public class BulletScript : MonoBehaviour
     public int damage = 5;
     public float lifetime = 3f;
 
-    // Start is called before the first frame update
     void Start()
     {
         Destroy(gameObject, lifetime);
@@ -25,3 +24,4 @@ public class BulletScript : MonoBehaviour
         Destroy(gameObject);
     }
 }
+

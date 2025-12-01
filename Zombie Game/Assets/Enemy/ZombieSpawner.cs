@@ -1,20 +1,13 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ZombieSpawner : MonoBehaviour
 {
-    [Header("Prefab & spawn")]
     public GameObject enemyPrefab;
-    [Tooltip("Optional: multiple spawn points. If empty, spawns at this object's position.")]
     public Transform[] spawnPoints;
 
-    [Header("Spawning control")]
-    public float spawnInterval = 1.5f;
-    [Tooltip("How many zombies can be alive at once")]
-    public int maxActiveEnemies = 5;
+    public int maxActiveEnemies = 24;
 
-    [Header("References")]
     public RoundManager roundManager;
     public Canvas uiCanvas;
 
@@ -38,7 +31,11 @@ public class ZombieSpawner : MonoBehaviour
 
         timer += Time.deltaTime;
 
-        if (timer >= spawnInterval && roundManager.CanSpawnMoreThisRound() && activeEnemies < maxActiveEnemies)
+        float dynamicSpawnInterval = Mathf.Lerp(2f, 0.15f, roundManager.CurrentRound / 30f);
+
+        if (timer >= dynamicSpawnInterval &&
+            roundManager.CanSpawnMoreThisRound() &&
+            activeEnemies < maxActiveEnemies)
         {
             SpawnEnemy();
             timer = 0f;
@@ -47,28 +44,11 @@ public class ZombieSpawner : MonoBehaviour
 
     private void SpawnEnemy()
     {
-        Transform spawnPoint = GetSpawnPoint();
+        Transform p = spawnPoints[Random.Range(0, spawnPoints.Length)];
+        Vector3 pos = p.position;
 
-        // ----------- FIX 1: GROUND CHECK -----------
-        Vector3 spawnPos = spawnPoint.position;
+        GameObject enemyObj = Instantiate(enemyPrefab, pos, p.rotation);
 
-        // Cast downward to detect floor
-        if (Physics.Raycast(spawnPos + Vector3.up * 3f, Vector3.down, out RaycastHit hit, 10f))
-        {
-            spawnPos = hit.point;
-        }
-        else
-        {
-            // Fallback: force Y = 0 if level ground
-            spawnPos.y = 0f;
-        }
-        // -------------------------------------------
-
-        GameObject enemyObj = Instantiate(enemyPrefab, spawnPos, spawnPoint.rotation);
-        if (enemyObj == null)
-            return;
-
-        // Configure enemy
         Enemy enemy = enemyObj.GetComponent<Enemy>();
         if (enemy != null)
         {
@@ -80,31 +60,17 @@ public class ZombieSpawner : MonoBehaviour
         roundManager.ZombieSpawned();
     }
 
-    private Transform GetSpawnPoint()
-    {
-        if (spawnPoints != null && spawnPoints.Length > 0)
-        {
-            int idx = Random.Range(0, spawnPoints.Length);
-            return spawnPoints[idx];
-        }
-        return this.transform;
-    }
-
-    // Called by Enemy when it dies
     public void EnemyDied()
     {
         activeEnemies = Mathf.Max(activeEnemies - 1, 0);
-
-        if (roundManager != null)
-            roundManager.ZombieKilled();
+        roundManager.ZombieKilled();
     }
 
-    private void OnRoundEnd(int round)
+    private void OnRoundEnd(int r)
     {
         isSpawning = false;
         activeEnemies = 0;
-
-        StartCoroutine(ResumeSpawningAfterDelay(2f));
+        StartCoroutine(ResumeSpawningAfterDelay(3f));
     }
 
     private IEnumerator ResumeSpawningAfterDelay(float delay)
@@ -112,6 +78,6 @@ public class ZombieSpawner : MonoBehaviour
         yield return new WaitForSeconds(delay);
         isSpawning = true;
     }
-
-    public int ActiveEnemiesCount => activeEnemies;
 }
+
+

@@ -1,20 +1,17 @@
-using System.Collections;
 using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Enemy : MonoBehaviour
 {
-    [Header("Stats")]
     public float maxHealth = 100f;
     public float moveSpeed = 3.5f;
 
-    [Header("Attack Settings (No Animation Events)")]
     public float attackRange = 2.5f;
     public float attackDamage = 10f;
     public float attackCooldown = 1.2f;
     private float nextAttackTime = 0f;
 
-    [Header("Damage Text")]
     public GameObject floatingDamageTextPrefab;
     public Canvas uiCanvas;
 
@@ -44,7 +41,6 @@ public class Enemy : MonoBehaviour
         health = maxHealth;
 
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-
         target = playerObj.transform;
 
         StartCoroutine(GroundZombie());
@@ -60,13 +56,10 @@ public class Enemy : MonoBehaviour
         faceDir.y = 0f;
         transform.forward = faceDir.normalized;
 
-        if (distance > stoppingDistance)
-            moveDirection = faceDir.normalized;
-        else
-            moveDirection = Vector3.zero;
+        moveDirection = distance > stoppingDistance ?
+            faceDir.normalized : Vector3.zero;
 
         GroundFollow();
-
         CheckAndPerformAttack();
 
         animator.SetFloat("Speed", moveDirection.magnitude);
@@ -93,14 +86,11 @@ public class Enemy : MonoBehaviour
             if (hit.CompareTag("Player"))
             {
                 nextAttackTime = Time.time + attackCooldown;
-
                 animator.SetTrigger("Attack");
 
                 PlayerMovement p = hit.GetComponent<PlayerMovement>();
                 if (p != null)
-                {
                     p.TakeDamage(attackDamage);
-                }
 
                 return;
             }
@@ -163,10 +153,5 @@ public class Enemy : MonoBehaviour
             transform.position = pos;
         }
     }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
-    }
 }
+
