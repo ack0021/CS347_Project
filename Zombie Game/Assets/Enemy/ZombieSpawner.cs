@@ -115,9 +115,3 @@ public class ZombieSpawner : MonoBehaviour
 
     public int ActiveEnemiesCount => activeEnemies;
 }
-
-
-
-
-
-

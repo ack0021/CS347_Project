@@ -1869,7 +1869,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gunSystem: {fileID: 574993300}
-  speed: 15
+  speed: 12
   gravity: -19.62
   jumpHeight: 3
   groundCheck: {fileID: 2089688025}
@@ -1879,7 +1879,7 @@ MonoBehaviour:
     m_Bits: 8
   maxHealth: 100
   currentHealth: 0
-  healthBar: {fileID: 0}
+  healthBar: {fileID: 1815166024}
   canMove: 1
 --- !u!143 &323211563
 CharacterController:
@@ -2551,12 +2551,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 430958951}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0199aa2b15477134c82016e4db468870, type: 3}
+  m_Script: {fileID: 11500000, guid: 96cf21c7ca2e8784d95df10a3cabbf79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 4493914613880827488, guid: 41b210c2386292d4db8dc84db55a5625, type: 3}
   spawnPoints: []
-  spawnInterval: 1
+  spawnInterval: 1.5
   maxActiveEnemies: 5
   roundManager: {fileID: 992656670}
   uiCanvas: {fileID: 1225002326}
@@ -3410,51 +3410,17 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -8135553595718028330, guid: 4471b1f7f824e4d44887e1364c6fc61a, type: 3}
---- !u!1 &574993299 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3280550497087307536, guid: c97286efecb55d64db8466ca2ee0554d, type: 3}
+--- !u!114 &574993300 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 574993300, guid: c97286efecb55d64db8466ca2ee0554d, type: 3}
   m_PrefabInstance: {fileID: 797445611}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &574993300
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 574993299}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e3e1410e259b6714d83b317a7e61a3b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 20
-  timeBetweenShooting: 0.08
-  spread: 0
-  range: 100
-  reloadTime: 1
-  timeBetweenShots: 0.1
-  magazineSize: 30
-  bulletsPerTap: 1
-  allowButtonHold: 1
-  bulletPrefab: {fileID: 5734226987334961642, guid: 12ec5511285bda24c868aaf75c93e166, type: 3}
-  bulletSpawn: {fileID: 1185997050}
-  bulletVelocity: 100
-  bulletLifetime: 3
-  gunTransform: {fileID: 797445612}
-  recoilPosition: {x: 0, y: -0.05, z: -0.1}
-  gunRecoilSpeed: 10
-  cameraTransform: {fileID: 963194228}
-  muzzleFlash: {fileID: 602303954}
-  cameraRecoilAngle: 1
-  cameraRecoilReturnSpeed: 3
-  fpsCam: {fileID: 963194227}
-  whatIsEnemy:
-    serializedVersion: 2
-    m_Bits: 1
-  ammunitionDisplay: {fileID: 663934744}
-  shoot: {fileID: 2046171127}
-  reload: {fileID: 767517411}
-  isDead: 0
 --- !u!1001 &599295376
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3540,11 +3506,6 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -8135553595718028330, guid: 4471b1f7f824e4d44887e1364c6fc61a, type: 3}
---- !u!198 &602303954 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 2137255680, guid: c97286efecb55d64db8466ca2ee0554d, type: 3}
-  m_PrefabInstance: {fileID: 797445611}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &631007749
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4235,27 +4196,27 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 963194228}
     m_Modifications:
-    - target: {fileID: 2398081701698327293, guid: c97286efecb55d64db8466ca2ee0554d, type: 3}
+    - target: {fileID: 574993300, guid: c97286efecb55d64db8466ca2ee0554d, type: 3}
       propertyPath: shoot
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2398081701698327293, guid: c97286efecb55d64db8466ca2ee0554d, type: 3}
+      objectReference: {fileID: 2046171127}
+    - target: {fileID: 574993300, guid: c97286efecb55d64db8466ca2ee0554d, type: 3}
       propertyPath: fpsCam
       value: 
       objectReference: {fileID: 963194227}
-    - target: {fileID: 2398081701698327293, guid: c97286efecb55d64db8466ca2ee0554d, type: 3}
+    - target: {fileID: 574993300, guid: c97286efecb55d64db8466ca2ee0554d, type: 3}
       propertyPath: reload
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2398081701698327293, guid: c97286efecb55d64db8466ca2ee0554d, type: 3}
+      objectReference: {fileID: 767517411}
+    - target: {fileID: 574993300, guid: c97286efecb55d64db8466ca2ee0554d, type: 3}
       propertyPath: bulletSpawn
       value: 
       objectReference: {fileID: 1185997050}
-    - target: {fileID: 2398081701698327293, guid: c97286efecb55d64db8466ca2ee0554d, type: 3}
+    - target: {fileID: 574993300, guid: c97286efecb55d64db8466ca2ee0554d, type: 3}
       propertyPath: cameraTransform
       value: 
       objectReference: {fileID: 963194228}
-    - target: {fileID: 2398081701698327293, guid: c97286efecb55d64db8466ca2ee0554d, type: 3}
+    - target: {fileID: 574993300, guid: c97286efecb55d64db8466ca2ee0554d, type: 3}
       propertyPath: ammunitionDisplay
       value: 
       objectReference: {fileID: 663934744}
@@ -4307,8 +4268,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: assault4
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 2398081701698327293, guid: c97286efecb55d64db8466ca2ee0554d, type: 3}
+    - target: {fileID: 3928870863313641157, guid: c97286efecb55d64db8466ca2ee0554d, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: cae46648b668d724198a4e59d8eaf908, type: 2}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c97286efecb55d64db8466ca2ee0554d, type: 3}
 --- !u!4 &797445612 stripped
 Transform:
@@ -5626,7 +5590,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 992656669}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c80b73760786ad6499b23bb5a5f26188, type: 3}
+  m_Script: {fileID: 11500000, guid: a7d5147ad3b87e6458f37a4a9f7a5236, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   baseZombieCount: 10
@@ -6806,12 +6770,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1320753110}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0199aa2b15477134c82016e4db468870, type: 3}
+  m_Script: {fileID: 11500000, guid: 96cf21c7ca2e8784d95df10a3cabbf79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 4493914613880827488, guid: 41b210c2386292d4db8dc84db55a5625, type: 3}
   spawnPoints: []
-  spawnInterval: 1
+  spawnInterval: 1.5
   maxActiveEnemies: 5
   roundManager: {fileID: 992656670}
   uiCanvas: {fileID: 1225002326}
@@ -7512,12 +7476,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1490558022}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0199aa2b15477134c82016e4db468870, type: 3}
+  m_Script: {fileID: 11500000, guid: 96cf21c7ca2e8784d95df10a3cabbf79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 4493914613880827488, guid: 41b210c2386292d4db8dc84db55a5625, type: 3}
   spawnPoints: []
-  spawnInterval: 1
+  spawnInterval: 1.5
   maxActiveEnemies: 5
   roundManager: {fileID: 992656670}
   uiCanvas: {fileID: 1225002326}
@@ -7813,12 +7777,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1552056537}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0199aa2b15477134c82016e4db468870, type: 3}
+  m_Script: {fileID: 11500000, guid: 96cf21c7ca2e8784d95df10a3cabbf79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 4493914613880827488, guid: 41b210c2386292d4db8dc84db55a5625, type: 3}
   spawnPoints: []
-  spawnInterval: 1
+  spawnInterval: 1.5
   maxActiveEnemies: 5
   roundManager: {fileID: 992656670}
   uiCanvas: {fileID: 1225002326}
@@ -10614,7 +10578,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2134950817}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82aeef876be187e4182c3ecfa8450ff0, type: 3}
+  m_Script: {fileID: 11500000, guid: 5f813a012ca3b6341bc1c7d990d68de1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   zombiesKilledText: {fileID: 2134950819}

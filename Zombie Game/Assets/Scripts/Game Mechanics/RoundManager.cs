@@ -19,7 +19,7 @@ public class RoundManager : MonoBehaviour
     [HideInInspector] private int totalSpawned;
     [HideInInspector] private int totalKilled;
 
-    public event Action<int> OnRoundEnd;  
+    public event Action<int> OnRoundEnd;
 
     private void Awake()
     {
@@ -74,6 +74,3 @@ public class RoundManager : MonoBehaviour
         return totalSpawned < totalZombiesThisRound;
     }
 }
-
-
-

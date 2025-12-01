@@ -4967,7 +4967,7 @@ GameObject:
   - component: {fileID: 2795904031978874282}
   - component: {fileID: 1252792834845698575}
   - component: {fileID: 3928870863313641157}
-  - component: {fileID: 2398081701698327293}
+  - component: {fileID: 574993300}
   m_Layer: 0
   m_Name: assault4
   m_TagString: Untagged
@@ -5017,7 +5017,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: cae46648b668d724198a4e59d8eaf908, type: 2}
+  - {fileID: 2100000, guid: 601eadd2fed91b84995b0eb05132f78d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -5039,7 +5039,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2398081701698327293
+--- !u!114 &574993300
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5048,25 +5048,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 3280550497087307536}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38ace82b427107545b93d004fef70425, type: 3}
+  m_Script: {fileID: 11500000, guid: e3e1410e259b6714d83b317a7e61a3b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
+  damage: 20
   timeBetweenShooting: 0.08
-  spread: 0.1
+  spread: 0
   range: 100
   reloadTime: 1
-  timeBetweenShots: 0
+  timeBetweenShots: 0.1
   magazineSize: 30
   bulletsPerTap: 1
   allowButtonHold: 1
   bulletPrefab: {fileID: 5734226987334961642, guid: 12ec5511285bda24c868aaf75c93e166, type: 3}
   bulletSpawn: {fileID: 0}
-  bulletVelocity: 30
+  bulletVelocity: 100
   bulletLifetime: 3
   gunTransform: {fileID: 2795904031978874282}
   recoilPosition: {x: 0, y: -0.05, z: -0.1}
-  gunRecoilSpeed: 5
+  gunRecoilSpeed: 10
   cameraTransform: {fileID: 0}
   muzzleFlash: {fileID: 2137255680}
   cameraRecoilAngle: 1
@@ -5076,3 +5076,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1
   ammunitionDisplay: {fileID: 0}
+  shoot: {fileID: 0}
+  reload: {fileID: 0}
+  isDead: 0

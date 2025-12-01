@@ -28,7 +28,3 @@ public class ZombiesKilledCounter : MonoBehaviour
             zombiesKilledText.SetText("Zombies Killed: " + kills);
     }
 }
-
-
-
-

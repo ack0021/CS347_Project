@@ -7,20 +7,23 @@ using UnityEngine;
 public class RoundEndUI : MonoBehaviour
 {
     public TextMeshProUGUI victoryText;
-    public TestPlayerMovement playerMovement;
+    public PlayerMovement playerMovement;
     public RoundManager roundManager;
 
     void Start()
     {
         victoryText.gameObject.SetActive(false);
 
+        // Fix: this event passes an int, so our method must accept one
         roundManager.OnRoundEnd += HandleRoundEnd;
     }
 
-    private void HandleRoundEnd()
+    // FIXED: matches Action<int>
+    private void HandleRoundEnd(int roundNumber)
     {
         playerMovement.canMove = false;
         victoryText.gameObject.SetActive(true);
         victoryText.text = "VICTORY!";
     }
 }
+
