@@ -17,4 +17,9 @@ public class StartGameScript : MonoBehaviour
     {
         SceneManager.LoadScene("Parker's - SampleScene");
     }
+
+    public void OnQuitButton()
+    {
+        Application.Quit();
+    }
 }
