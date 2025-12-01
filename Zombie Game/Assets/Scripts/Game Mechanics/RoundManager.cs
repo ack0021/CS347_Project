@@ -13,6 +13,7 @@ public class RoundManager : MonoBehaviour
     private int totalKilled;
 
     public event Action<int> OnRoundEnd;
+    public event Action OnRoundStart;
 
     private void Awake()
     {
@@ -32,6 +33,8 @@ public class RoundManager : MonoBehaviour
         totalZombiesThisRound = CalculateZombiesForRound(currentRound);
 
         Debug.Log($"Round {currentRound} starting — Zombies: {totalZombiesThisRound}");
+
+        OnRoundStart?.Invoke();
     }
 
     private int CalculateZombiesForRound(int round)
@@ -60,8 +63,15 @@ public class RoundManager : MonoBehaviour
             OnRoundEnd?.Invoke(currentRound);
 
             currentRound++;
-            StartNewRound();
+
+            StartCoroutine(DelayNextRound());
         }
+    }
+
+    private IEnumerator DelayNextRound()
+    {
+        yield return new WaitForSeconds(0.1f); // small delay to allow music switch
+        StartNewRound();
     }
 
     public int CurrentRound => currentRound;

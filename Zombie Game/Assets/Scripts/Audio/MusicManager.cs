@@ -15,16 +15,11 @@ public class MusicManager : MonoBehaviour
         if (roundManager == null)
             roundManager = FindObjectOfType<RoundManager>();
 
-        // RoundEnd sends an int (the round #), so we accept it but ignore it
+        // Round End
         roundManager.OnRoundEnd += PlayVictoryMusic;
 
-        // start gameplay music
-        if (audioSource != null && bgm != null)
-        {
-            audioSource.clip = bgm;
-            audioSource.loop = true;
-            audioSource.Play();
-        }
+        // Round Start
+        roundManager.OnRoundStart += PlayBGMusic;
     }
 
     // MATCHES Action<int> required by OnRoundEnd
@@ -37,6 +32,17 @@ public class MusicManager : MonoBehaviour
 
         // switch to victory track
         audioSource.clip = victory;
+        audioSource.loop = true;
+        audioSource.Play();
+    }
+
+    void PlayBGMusic()
+    {
+        if (audioSource == null || bgm == null) return;
+
+        audioSource.Stop();
+
+        audioSource.clip = bgm;
         audioSource.loop = true;
         audioSource.Play();
     }
