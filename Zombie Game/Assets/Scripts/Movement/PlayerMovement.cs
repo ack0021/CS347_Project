@@ -25,6 +25,7 @@ public class PlayerMovement : MonoBehaviour
     bool isGrounded;
 
     public bool canMove = true;
+    public GameOverUI gameOverUI;
 
     void Start()
     {
@@ -72,10 +73,6 @@ public class PlayerMovement : MonoBehaviour
         controller.Move(velocity * Time.deltaTime);
     }
 
-    // -------------------------
-    // HEALTH SYSTEM
-    // -------------------------
-
     public void TakeDamage(float amount)
     {
         currentHealth -= amount;
@@ -84,6 +81,11 @@ public class PlayerMovement : MonoBehaviour
         {
             Die();
             gunSystem.Dead();
+
+            if (gameOverUI != null)
+            {
+                gameOverUI.ShowGameOver();
+            }
         }
     }
 
@@ -91,6 +93,17 @@ public class PlayerMovement : MonoBehaviour
     {
         canMove = false;
         Debug.Log("PLAYER DIED");
+
+        PlayerCam camLook = Camera.main.GetComponent<PlayerCam>();
+        if (camLook != null)
+        {
+            camLook.enabled = false;
+        }
+
+        if (gameOverUI != null)
+        {
+            gameOverUI.ShowGameOver();
+        }
     }
 }
 
