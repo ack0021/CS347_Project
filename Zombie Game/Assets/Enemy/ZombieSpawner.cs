@@ -11,7 +11,7 @@ public class ZombieSpawner : MonoBehaviour
     [Header("Scaling (Rounds)")]
     public int maxScalingRound = 10;
     public float startHealth = 100f;
-    public float maxHealth = 1000f;
+    public float maxHealth = 600f;
     public float startSpeed = 4f;
     public float maxSpeed = 7f;
 
@@ -39,7 +39,7 @@ public class ZombieSpawner : MonoBehaviour
 
         timer += Time.deltaTime;
 
-        float dynamicSpawnInterval = Mathf.Lerp(2f, 0.15f, roundManager.CurrentRound / 30f);
+        float dynamicSpawnInterval = Mathf.Lerp(2f, 0.15f, roundManager.CurrentRound / 10f);
 
         if (timer >= dynamicSpawnInterval &&
             roundManager.CanSpawnMoreThisRound() &&
@@ -67,12 +67,12 @@ public class ZombieSpawner : MonoBehaviour
 
             enemy.maxHealth = Mathf.Lerp(startHealth, maxHealth, t);
             enemy.moveSpeed = Mathf.Lerp(startSpeed, maxSpeed, t);
-            enemy.SetHealthToMax();
         }
 
         activeEnemies++;
         roundManager.ZombieSpawned();
     }
+
 
     public void EnemyDied()
     {

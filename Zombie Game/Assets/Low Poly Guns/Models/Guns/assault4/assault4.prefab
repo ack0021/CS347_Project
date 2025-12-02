@@ -5051,15 +5051,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3e1410e259b6714d83b317a7e61a3b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 20
+  baseDamage: 30
+  baseFireRate: 0.1
+  baseReloadTime: 1.5
+  damageMultiplier: 1
+  fireRateMultiplier: 1
+  reloadMultiplier: 1
   spread: 0
   range: 100
-  reloadTime: 1
   timeBetweenShots: 0.1
   magazineSize: 30
   bulletsPerTap: 1
   allowButtonHold: 1
-  fireRate: 0.2
   bulletPrefab: {fileID: 5734226987334961642, guid: 12ec5511285bda24c868aaf75c93e166, type: 3}
   bulletSpawn: {fileID: 0}
   bulletVelocity: 100

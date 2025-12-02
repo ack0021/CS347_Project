@@ -59,33 +59,35 @@ public class UpgradeSystem : MonoBehaviour
     }
 
 
-
-    // ----------------------
-    //       CORE LOGIC
-    // ----------------------
     public void GiveUpgrades()
     {
         Time.timeScale = 0f;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
+        List<Upgrade> availableUpgrades = new List<Upgrade>(allUpgrades);
+
         for (int i = 0; i < 3; i++)
         {
-            // FIX: Instantiate so ScriptableObject is NOT modified
-            Upgrade baseUpgrade = allUpgrades[Random.Range(0, allUpgrades.Length)];
+            if (availableUpgrades.Count == 0)
+            {
+                Debug.LogWarning("Not enough unique upgrades to fill all options!");
+                break;
+            }
+
+            int randIndex = Random.Range(0, availableUpgrades.Count);
+            Upgrade baseUpgrade = availableUpgrades[randIndex];
+
+            availableUpgrades.RemoveAt(randIndex);
+
             Upgrade upgrade = Instantiate(baseUpgrade);
 
-            // Roll rarity FIRST
             upgrade.rarity = Upgrade.RollRarity();
 
-            // Roll a % value based on rarity
             upgrade.rolledValue = Mathf.Round(upgrade.GetRandomValueForRarity(upgrade.rarity));
 
             currentChoices[i] = upgrade;
 
-            // ----------------------
-            //      UI POPULATION
-            // ----------------------
             string rarityHex = GetRarityHex(upgrade.rarity);
             string rarityText = upgrade.rarity.ToString();
 
@@ -108,6 +110,7 @@ public class UpgradeSystem : MonoBehaviour
 
         upgradePanel.SetActive(true);
     }
+
 
 
 
@@ -149,6 +152,7 @@ public class UpgradeSystem : MonoBehaviour
         if (upgrade is SpeedUpgrade) return "Speed Increase";
         if (upgrade is FireRateUpgrade) return "Fire Rate Increase";
         if (upgrade is HealthUpgrade) return "Max Health Increase";
+        if (upgrade is AmmoUpgrade) return "Ammo Amount Increase";
 
         return "Increase";
     }

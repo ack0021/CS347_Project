@@ -2,23 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class ZombieSounds : MonoBehaviour
 {
     public AudioSource audioSource;
     public AudioClip[] growls;
 
-    public float minDelay = 3f; // minimum delay between growls
-    public float maxDelay = 7f; // maximum delay between growls
+    public float minDelay = 3f;
+    public float maxDelay = 7f;
 
-    public float hearingDist = 20f; // maximum distance to player sound can be heard
+    public float hearingDist = 20f;
 
     public Transform player;
 
-    // Start is called before the first frame update
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
