@@ -3,11 +3,19 @@ using UnityEngine;
 
 public class ZombieSpawner : MonoBehaviour
 {
+    [Header("Zombie Settings")]
     public GameObject enemyPrefab;
     public Transform[] spawnPoints;
-
     public int maxActiveEnemies = 24;
 
+    [Header("Scaling (Rounds)")]
+    public int maxScalingRound = 10;
+    public float startHealth = 100f;
+    public float maxHealth = 1000f;
+    public float startSpeed = 4f;
+    public float maxSpeed = 7f;
+
+    [Header("References")]
     public RoundManager roundManager;
     public Canvas uiCanvas;
 
@@ -54,6 +62,12 @@ public class ZombieSpawner : MonoBehaviour
         {
             enemy.spawner = this;
             enemy.uiCanvas = uiCanvas;
+
+            float t = Mathf.Clamp01((float)roundManager.CurrentRound / maxScalingRound);
+
+            enemy.maxHealth = Mathf.Lerp(startHealth, maxHealth, t);
+            enemy.moveSpeed = Mathf.Lerp(startSpeed, maxSpeed, t);
+            enemy.SetHealthToMax();
         }
 
         activeEnemies++;
@@ -79,5 +93,6 @@ public class ZombieSpawner : MonoBehaviour
         isSpawning = true;
     }
 }
+
 
 

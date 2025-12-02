@@ -46,6 +46,11 @@ public class Enemy : MonoBehaviour
         StartCoroutine(GroundZombie());
     }
 
+    public void SetHealthToMax()
+    {
+        health = maxHealth;
+    }
+
     private void Update()
     {
         if (isDead || target == null) return;
