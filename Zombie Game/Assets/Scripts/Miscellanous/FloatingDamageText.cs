@@ -46,17 +46,24 @@ public class FloatingDamageText : MonoBehaviour
 
     public void SetText(string value)
     {
-        if (UpgradeSystem.instance != null && UpgradeSystem.instance.IsMenuOpen) return;
+        if (UpgradeSystem.instance != null && UpgradeSystem.instance.IsMenuOpen)
+            return;
+
         if (text != null)
             text.text = value;
     }
 
+
     void Update()
     {
-        if (UpgradeSystem.instance != null && UpgradeSystem.instance.IsMenuOpen) return;
+        if (UpgradeSystem.instance != null && UpgradeSystem.instance.IsMenuOpen)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         if (text == null) return;
 
-        // Pop animation
         if (!popped)
         {
             transform.localScale = Vector3.Lerp(transform.localScale, baseScale * popScale, popSpeed * Time.deltaTime);
@@ -68,16 +75,15 @@ public class FloatingDamageText : MonoBehaviour
             transform.localScale = Vector3.Lerp(transform.localScale, baseScale, popSpeed * Time.deltaTime);
         }
 
-        // Floating movement (UI uses anchoredPosition)
         rect.anchoredPosition += (Vector2)(floatDirection * moveUpSpeed * Time.deltaTime);
 
-        // Fade out
         textColor.a -= fadeSpeed * Time.deltaTime;
         text.color = textColor;
 
         if (textColor.a <= 0)
             Destroy(gameObject);
     }
+
 }
 
 

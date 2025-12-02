@@ -129,8 +129,24 @@ public class Enemy : MonoBehaviour
         var counter = FindObjectOfType<ZombiesKilledCounter>();
         counter?.IncrementKills();
 
+        // Disable all colliders so bullets won't hit the dead zombie
+        Collider[] colliders = GetComponentsInChildren<Collider>();
+        foreach (Collider c in colliders)
+        {
+            c.enabled = false;
+        }
+
+        // Optional: disable rigidbody physics so corpse doesn't block
+        Rigidbody[] rbs = GetComponentsInChildren<Rigidbody>();
+        foreach (Rigidbody rb in rbs)
+        {
+            rb.isKinematic = true;
+        }
+
+        // Destroy after a short delay
         Destroy(gameObject, 1.5f);
     }
+
 
     private IEnumerator GroundZombie()
     {

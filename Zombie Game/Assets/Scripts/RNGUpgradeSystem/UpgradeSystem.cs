@@ -123,7 +123,7 @@ public class UpgradeSystem : MonoBehaviour
 
 
 
-    void SelectUpgrade(int index)
+    public void SelectUpgrade(int index)
     {
         if (currentChoices[index] != null)
             currentChoices[index].Apply(player, gun);

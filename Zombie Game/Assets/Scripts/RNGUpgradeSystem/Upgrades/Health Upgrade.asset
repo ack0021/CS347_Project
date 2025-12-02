@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b67c6e3d47f605749a00976bbce8868e, type: 3}
   m_Name: Health Upgrade
   m_EditorClassIdentifier: 
-  upgradeName: 
-  description: 
-  icon: {fileID: 0}
+  upgradeName: Medkit
+  description: always so prepared
+  icon: {fileID: 21300000, guid: 9cbddb9960140c042a78c47bcb653c52, type: 3}
   rolledValue: 0
   rarity: 0

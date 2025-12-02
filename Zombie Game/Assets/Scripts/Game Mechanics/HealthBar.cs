@@ -23,6 +23,7 @@ public class HealthBar : MonoBehaviour
     void Update()
     {
         if (isDead == true) return;
+        slider.maxValue = player.maxHealth;
         slider.value = player.currentHealth;
         UpdateText(player.currentHealth, slider.maxValue);
 
