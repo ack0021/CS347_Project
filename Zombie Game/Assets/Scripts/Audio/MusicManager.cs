@@ -20,6 +20,8 @@ public class MusicManager : MonoBehaviour
 
         // Round Start
         roundManager.OnRoundStart += PlayBGMusic;
+
+        PlayBGMusic();
     }
 
     // MATCHES Action<int> required by OnRoundEnd

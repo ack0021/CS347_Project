@@ -16,6 +16,12 @@ public class StartGameScript : MonoBehaviour
     public void OnNextPress()
     {
         SceneManager.LoadScene("Parker's - SampleScene");
+
+        var mm = FindObjectOfType<MenuMusic>();
+        if (mm != null)
+        {
+            Destroy(mm.gameObject);  // Destroy main menu music object
+        }
     }
 
     public void OnQuitButton()

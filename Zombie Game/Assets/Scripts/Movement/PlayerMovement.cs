@@ -7,6 +7,9 @@ public class PlayerMovement : MonoBehaviour
     private CharacterController controller;
     public GunSystem1 gunSystem;
 
+    public AudioSource audioSource;
+    public AudioClip[] hurtSounds;
+
     [Header("Movement")]
     public float baseSpeed = 12f;
     public float speedMultiplier = 1f;
@@ -77,6 +80,7 @@ public class PlayerMovement : MonoBehaviour
     public void TakeDamage(float amount)
     {
         currentHealth -= amount;
+        PlayRandomHurtSound();
 
         if (currentHealth <= 0f)
         {
@@ -86,6 +90,15 @@ public class PlayerMovement : MonoBehaviour
             if (gameOverUI != null)
                 gameOverUI.ShowGameOver();
         }
+    }
+
+    void PlayRandomHurtSound()
+    {
+        if (hurtSounds.Length == 0) return;
+        if (GameOverUI.isGameOver) return;
+
+        AudioClip clip  = hurtSounds[Random.Range(0, hurtSounds.Length)];
+        audioSource.PlayOneShot(clip);
     }
 
     private void Die()
