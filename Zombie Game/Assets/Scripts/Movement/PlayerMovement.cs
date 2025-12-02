@@ -7,6 +7,9 @@ public class PlayerMovement : MonoBehaviour
     private CharacterController controller;
     public GunSystem1 gunSystem;
 
+    public AudioSource audioSource;
+    public AudioClip[] hurtSounds;
+
     [Header("Movement")]
     public float baseSpeed = 12f;
     public float speedMultiplier = 1f;
@@ -27,9 +30,6 @@ public class PlayerMovement : MonoBehaviour
 
     public bool canMove = true;
     public GameOverUI gameOverUI;
-    public AudioSource audioSource;
-
-    private bool isDead = false;
 
     void Start()
     {
@@ -39,7 +39,6 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        if (isDead) return;
         if (!canMove)
         {
             controller.Move(Vector3.zero);
@@ -80,13 +79,8 @@ public class PlayerMovement : MonoBehaviour
 
     public void TakeDamage(float amount)
     {
-        if (isDead) return;
         currentHealth -= amount;
-
-        if (audioSource && !audioSource.isPlaying)
-        {
-            audioSource.Play();
-        }
+        PlayRandomHurtSound();
 
         if (currentHealth <= 0f)
         {
@@ -98,10 +92,18 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    void PlayRandomHurtSound()
+    {
+        if (hurtSounds.Length == 0) return;
+        if (GameOverUI.isGameOver) return;
+
+        AudioClip clip = hurtSounds[Random.Range(0, hurtSounds.Length)];
+        audioSource.PlayOneShot(clip);
+    }
+
     private void Die()
     {
         canMove = false;
-        isDead = true;
         Debug.Log("PLAYER DIED");
 
         PlayerCam camLook = Camera.main.GetComponent<PlayerCam>();
@@ -112,5 +114,7 @@ public class PlayerMovement : MonoBehaviour
             gameOverUI.ShowGameOver();
     }
 }
+
+
 
 
